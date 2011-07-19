@@ -69,6 +69,13 @@ Ext.define('Extensible.calendar.form.EventDetails', {
     buttonAlign: 'center',
     autoHeight: true, // to allow for the notes field to autogrow
     
+    /**
+     *@cfg array structure 
+     *array of strings that rappresent the fields
+     *if there is an object it will be copied in the column
+     */
+    structure:[['titleField','dateRangeField','calendarField','reminderField'],['notesField','locationField','urlField']],
+    
     /* // not currently supported
      * @cfg {Boolean} enableRecurrence
      * True to show the recurrence field, false to hide it (default). Note that recurrence requires
@@ -83,6 +90,10 @@ Ext.define('Extensible.calendar.form.EventDetails', {
     
     // private
     initComponent: function(){
+        
+        if(arguments.structure){
+            this.structure=arguments.structure;
+        }
         
         this.addEvents({
             /**
@@ -171,7 +182,26 @@ Ext.define('Extensible.calendar.form.EventDetails', {
                 anchor: '70%'
             });
             leftFields.splice(2, 0, this.calendarField);
-        };
+        }
+        
+        
+        //changes for dynamic structure
+        var leftStructure=this.structure[0],rightStructure=this.structure[1];
+        
+        for(x=0;x<leftStructure.length;x++){
+            if(typeof leftStructure[x]=="string" && this[leftStructure[x]]){
+                leftStructure[x]=this[leftStructure[x]];
+            }
+        }
+        
+        for(x=0;x<rightStructure.length;x++){
+            if(typeof rightStructure[x]=="string" && this[rightStructure[x]]){
+                rightStructure[x]=this[rightStructure[x]];
+            }
+        }
+        
+        //end changes
+        
         
         this.items = [{
             id: this.id+'-left-col',
@@ -181,7 +211,7 @@ Ext.define('Extensible.calendar.form.EventDetails', {
                 labelWidth: this.labelWidth
             },
             border: false,
-            items: leftFields
+            items: leftStructure
         },{
             id: this.id+'-right-col',
             columnWidth: this.colWidthRight,
@@ -190,15 +220,22 @@ Ext.define('Extensible.calendar.form.EventDetails', {
                 labelWidth: this.labelWidthRightCol || this.labelWidth
             },
             border: false,
-            items: rightFields
+            items: rightStructure
         }];
         
         this.fbar = [{
-            text:this.saveButtonText, scope: this, handler: this.onSave
+            text:this.saveButtonText, 
+            scope: this, 
+            handler: this.onSave
         },{
-            itemId:this.id+'-del-btn', text:this.deleteButtonText, scope:this, handler:this.onDelete
+            itemId:this.id+'-del-btn', 
+            text:this.deleteButtonText, 
+            scope:this, 
+            handler:this.onDelete
         },{
-            text:this.cancelButtonText, scope: this, handler: this.onCancel
+            text:this.cancelButtonText, 
+            scope: this, 
+            handler: this.onCancel
         }];
         
         this.addCls('ext-evt-edit-form');
