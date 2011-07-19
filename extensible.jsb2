@@ -66,6 +66,9 @@
             "text": "MemoryEventStore.js",
             "path": "src/calendar/data/"
         },{
+            "text": "JsonEventStore.js",
+            "path": "src/calendar/data/"
+        },{
             "text": "WeekEventRenderer.js",
             "path": "src/calendar/util/"
         },{
