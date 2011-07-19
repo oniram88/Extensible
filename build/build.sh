@@ -1,6 +1,6 @@
 # The current version string, substituted into the build path below
 VER=extensible-1.5.0-beta1
-EXTENSIBLE_ROOT=$HOME/Projects/Extensible
+EXTENSIBLE_ROOT=/Volumes/marino/dynamiCMS/www/librerie/extensible
 EXTENSIBLE_OUTPUT=$EXTENSIBLE_ROOT/deploy
 docs=
 
