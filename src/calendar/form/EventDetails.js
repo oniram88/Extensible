@@ -39,26 +39,23 @@ Ext.define('Extensible.calendar.form.EventDetails', {
     alias: 'widget.extensible.eventeditform',
     
     requires: [
-        'Extensible.form.field.DateRange',
-        'Extensible.calendar.form.field.ReminderCombo',
-        'Extensible.calendar.data.EventMappings',
-        'Extensible.calendar.form.field.CalendarCombo',
-        'Extensible.form.recurrence.Combo'
+    'Extensible.form.field.DateRange',
+    'Extensible.calendar.form.field.ReminderCombo',
+    'Extensible.calendar.data.EventMappings',
+    'Extensible.calendar.form.field.CalendarCombo',
+    'Extensible.form.recurrence.Combo'
     ],
     
     labelWidth: 65,
     labelWidthRightCol: 65,
-    colWidthLeft: .6,
-    colWidthRight: .4,
+    colFlexLeft: 2,
+    colFlexRight: 1,
     title: 'Event Form',
     titleTextAdd: 'Add Event',
     titleTextEdit: 'Edit Event',
     titleLabelText: 'Title',
     datesLabelText: 'When',
     reminderLabelText: 'Reminder',
-    notesLabelText: 'Notes',
-    locationLabelText: 'Location',
-    webLinkLabelText: 'Web Link',
     calendarLabelText: 'Calendar',
     repeatsLabelText: 'Repeats',
     saveButtonText: 'Save',
@@ -74,7 +71,7 @@ Ext.define('Extensible.calendar.form.EventDetails', {
      *array of strings that rappresent the fields
      *if there is an object it will be copied in the column
      */
-    structure:[['titleField','dateRangeField','calendarField','reminderField'],['notesField','locationField','urlField']],
+    structure:[['titleField','dateRangeField','calendarField','reminderField'],[]],
     
     /* // not currently supported
      * @cfg {Boolean} enableRecurrence
@@ -86,7 +83,7 @@ Ext.define('Extensible.calendar.form.EventDetails', {
     enableRecurrence: false,
     
     // private properties:
-    layout: 'column',
+    layout: 'hbox',
     
     // private
     initComponent: function(){
@@ -144,26 +141,14 @@ Ext.define('Extensible.calendar.form.EventDetails', {
             fieldLabel: this.reminderLabelText,
             anchor: '70%'
         });
-        this.notesField = Ext.create('Ext.form.TextArea', {
-            fieldLabel: this.notesLabelText,
-            name: Extensible.calendar.data.EventMappings.Notes.name,
-            grow: true,
-            growMax: 150,
-            anchor: '100%'
-        });
-        this.locationField = Ext.create('Ext.form.TextField', {
-            fieldLabel: this.locationLabelText,
-            name: Extensible.calendar.data.EventMappings.Location.name,
-            anchor: '100%'
-        });
-        this.urlField = Ext.create('Ext.form.TextField', {
-            fieldLabel: this.webLinkLabelText,
-            name: Extensible.calendar.data.EventMappings.Url.name,
-            anchor: '100%'
-        });
+        //        this.urlField = Ext.create('Ext.form.TextField', {
+        //            fieldLabel: this.webLinkLabelText,
+        //            name: Extensible.calendar.data.EventMappings.Url.name,
+        //            anchor: '100%'
+        //        });
         
-        var leftFields = [this.titleField, this.dateRangeField, this.reminderField], 
-            rightFields = [this.notesField, this.locationField, this.urlField];
+        //        var leftFields = [this.titleField, this.dateRangeField, this.reminderField], 
+        //            rightFields = [this.urlField];
             
         if(this.enableRecurrence){
             this.recurrenceField = Ext.create('Extensible.form.recurrence.Fieldset', {
@@ -171,7 +156,7 @@ Ext.define('Extensible.calendar.form.EventDetails', {
                 fieldLabel: this.repeatsLabelText,
                 anchor: '90%'
             });
-            leftFields.splice(2, 0, this.recurrenceField);
+        //            leftFields.splice(2, 0, this.recurrenceField);
         }
         
         if(this.calendarStore){
@@ -181,7 +166,7 @@ Ext.define('Extensible.calendar.form.EventDetails', {
                 name: Extensible.calendar.data.EventMappings.CalendarId.name,
                 anchor: '70%'
             });
-            leftFields.splice(2, 0, this.calendarField);
+        //            leftFields.splice(2, 0, this.calendarField);
         }
         
         
@@ -204,8 +189,10 @@ Ext.define('Extensible.calendar.form.EventDetails', {
         
         
         this.items = [{
+            xtype:'container',
+            align: 'stretch',
             id: this.id+'-left-col',
-            columnWidth: this.colWidthLeft,
+            flex:this.colFlexLeft,
             layout: 'anchor',
             fieldDefaults: {
                 labelWidth: this.labelWidth
@@ -213,8 +200,10 @@ Ext.define('Extensible.calendar.form.EventDetails', {
             border: false,
             items: leftStructure
         },{
+            xtype:'container',
+            align: 'stretch',
             id: this.id+'-right-col',
-            columnWidth: this.colWidthRight,
+            flex:this.colFlexRight,
             layout: 'anchor',
             fieldDefaults: {
                 labelWidth: this.labelWidthRightCol || this.labelWidth
@@ -260,7 +249,9 @@ Ext.define('Extensible.calendar.form.EventDetails', {
             this.recurrenceField.setStartDate(rec.data[Extensible.calendar.data.EventMappings.StartDate.name]);
         }
         if(this.calendarStore){
-            this.form.setValues({'calendar': rec.data[Extensible.calendar.data.EventMappings.CalendarId.name]});
+            this.form.setValues({
+                'calendar': rec.data[Extensible.calendar.data.EventMappings.CalendarId.name]
+            });
         }
         
         //this.isAdd = !!rec.data[Extensible.calendar.data.EventMappings.IsNew.name];
@@ -278,10 +269,10 @@ Ext.define('Extensible.calendar.form.EventDetails', {
     // inherited docs
     updateRecord: function(){
         var dates = this.dateRangeField.getValue(),
-            M = Extensible.calendar.data.EventMappings,
-            rec = this.activeRecord,
-            fs = rec.fields,
-            dirty = false;
+        M = Extensible.calendar.data.EventMappings,
+        rec = this.activeRecord,
+        fs = rec.fields,
+        dirty = false;
             
         rec.beginEdit();
         
