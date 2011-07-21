@@ -706,7 +706,13 @@ Ext.define('Extensible.calendar.CalendarPanel', {
     onEventAdd: function(form, rec){
         if(!rec.store){
             this.store.add(rec);
-            this.save();
+            this.save({
+                success:function(){
+                    //the dirty record don't become to true after update
+                    this.commit();
+                },
+                scope:this
+            });
         }
         this.fireEvent('eventadd', this, rec);
     },
