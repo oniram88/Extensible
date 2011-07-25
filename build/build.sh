@@ -34,6 +34,11 @@ cp $EXTENSIBLE_OUTPUT/$VER/extensible-all.js $EXTENSIBLE_ROOT
 cp $EXTENSIBLE_OUTPUT/$VER/extensible-all-debug.js $EXTENSIBLE_ROOT
 cp $EXTENSIBLE_OUTPUT/$VER/resources/css/extensible-all.css $EXTENSIBLE_ROOT/resources/css
 
+#chmod of elements
+chmod 644 $EXTENSIBLE_ROOT/extensible-all.js
+chmod 644 $EXTENSIBLE_ROOT/extensible-all-debug.js
+chmod 644 $EXTENSIBLE_ROOT/resources/css/extensible-all.css
+
 # Copy other resource files to output
 cp $EXTENSIBLE_ROOT/*.textile $EXTENSIBLE_OUTPUT/$VER/
 cp $EXTENSIBLE_ROOT/*.txt $EXTENSIBLE_OUTPUT/$VER/
