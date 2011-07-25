@@ -268,46 +268,36 @@ Ext.define('Extensible.calendar.form.EventDetails', {
     
     // inherited docs
     updateRecord: function(){
-        var dates = this.dateRangeField.getValue(),
+
+        var record = this.activeRecord,
+        fields = this.activeRecord.fields,
+        values = this.getForm().getFieldValues(),
+        
+        dates = this.dateRangeField.getValue(),
         M = Extensible.calendar.data.EventMappings,
-        rec = this.activeRecord,
-        fs = rec.fields,
+        name,
+        obj = {},
         dirty = false;
-            
-        rec.beginEdit();
-        
-        //TODO: This block is copied directly from BasicForm.updateRecord.
-        // Unfortunately since that method internally calls begin/endEdit all
-        // updates happen and the record dirty status is reset internally to
-        // that call. We need the dirty status, plus currently the DateRangeField
-        // does not map directly to the record values, so for now we'll duplicate
-        // the setter logic here (we need to be able to pick up any custom-added 
-        // fields generically). Need to revisit this later and come up with a better solution.
-        fs.each(function(f){
-            var field = this.form.findField(f.name);
-            if(field){
-                var value = field.getValue();
-                if (value.getGroupValue) {
-                    value = value.getGroupValue();
-                } 
-                else if (field.eachItem) {
-                    value = [];
-                    field.eachItem(function(item){
-                        value.push(item.getValue());
-                    });
-                }
-                rec.set(f.name, value);
+
+        fields.each(function(f) {
+            name = f.name;
+            if (name in values) {
+                obj[name] = values[name];
             }
-        }, this);
+        });
         
-        rec.set(M.StartDate.name, dates[0]);
-        rec.set(M.EndDate.name, dates[1]);
-        rec.set(M.IsAllDay.name, dates[2]);
+        record.beginEdit();
+        record.set(obj);
+        
+//        console.log(obj,record);
+       
+        record.set(M.StartDate.name, dates[0]);
+        record.set(M.EndDate.name, dates[1]);
+        record.set(M.IsAllDay.name, dates[2]);
         
         dirty = rec.dirty;
         //delete rec.store; // make sure the record does not try to autosave
-        rec.endEdit();
-        
+        record.endEdit();
         return dirty;
     },
     
@@ -338,8 +328,10 @@ Ext.define('Extensible.calendar.form.EventDetails', {
             this.onCancel();
             return;
         }
+//        console.log('mi sono aggiornato');
         this.fireEvent(this.activeRecord.phantom ? 'eventadd' : 'eventupdate', this, this.activeRecord);
     },
+    
 
     // private
     onDelete: function(){
