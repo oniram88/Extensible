@@ -31,7 +31,7 @@ Ext.define('Extensible.calendar.data.JsonEventStore', {
     // private - override to make sure that any records added in-memory
     // still get a unique PK assigned at the data level
     interceptCreateRecords: function(records, operation, success) {
-        console.log(records,operation,success);
+//        console.log(records,operation,success);
         if (success) {
             var i = 0,
                 rec,
